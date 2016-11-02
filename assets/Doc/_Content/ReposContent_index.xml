@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN"
+"technicalContent/dtd/topic.dtd" [
+<!-- Begin Document Specific Declarations -->
+<!-- End Document Specific Declarations -->
+]>
+<topic id="ReposContent_index_1">
+  <title><codeph>index.html</codeph> File</title>
+
+  <body>
+    <p>This file implements the single page app. The file serves the following
+    functions:<ul>
+        <li><p>Link to the app's CSS and JS files</p></li>
+
+        <li><p>Declare Angular bindings</p><p>This includes mapping the BODY
+        tag to the 4D app, mapping a DIV to the app's main controller, mapping
+        buttons to controller functions, and mapping DIV elements to various
+        directive data models (topic, TOC, and search data). </p></li>
+
+        <li><p>Declare app configuration</p> <p>The index file includes JS to
+        declare config data such as: <ul>
+            <li><p>The search data file to use for this publication</p></li>
+
+            <li><p>Paths to different directories this publication will
+            use</p></li>
+
+            <li><p>Files this publication will use -- Root document
+            (index.html), DITAMAP file (for the TOC), XSLT file to generate
+            the TOC, XSLT file to generate topic content, and other
+            files.</p></li>
+
+            <li><p>Lay out the 4D Pubs display </p></li>
+          </ul> </p></li>
+      </ul></p>
+
+    <p>When you open the index.html file:</p>
+
+    <ul>
+      <li><p>The 4D app loads </p></li>
+
+      <li><p>The app loads the Search data as a JSON object </p></li>
+
+      <li><p>The app generates the TOC </p></li>
+
+      <li><p>The app loads the default topic and displays it </p></li>
+    </ul>
+  </body>
+</topic>
