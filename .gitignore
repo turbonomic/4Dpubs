@@ -1,0 +1,25 @@
+# This is a bit of a mishmash of various .gitignore files.  This may or may not be cleaned up in the future.
+# Better to ignore too much than too little, right?
+
+Gemfile.lock
+_site
+.sass-cache
+.DS_Store
+images/.DS_Store
+
+# Node rules:
+## Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
+.grunt
+
+## Dependency directory
+## Commenting this out is preferred by some people, see
+## https://docs.npmjs.com/misc/faq#should-i-check-my-node_modules-folder-into-git
+node_modules
+
+# Book build output
+_book
+
+# eBook build output
+*.epub
+*.mobi
+*.pdf
