@@ -32,8 +32,12 @@ limitations under the License.
 
 ## Sites Using 4Dpubs
 
-You can see an example of the 4Dpubs in action at:
-#### http://htmlpreview.github.com/?https://github.com/discoposse/4Dpubs/blob/master/index.html
+Single-source is one advantage of 4Dpubs. Because the source is DITA, you can publish 
+that source in any other format that DITA supports. The 4D content displays dynamically 
+in the app, and you can generate static publications for viewing outside of the app.
+Turbonomic uses 4Dpubs to dynamically deliver help and API documentation. To see this 
+in action, install the Turbonomic product. You also can see static versions 
+of this documentation:
 #### https://docs.turbonomic.com
 
 
