@@ -33,6 +33,7 @@ limitations under the License.
 ## Sites Using 4Dpubs
 
 You can see an example of the 4Dpubs in action at:
+#### http://htmlpreview.github.com/?https://github.com/discoposse/4Dpubs/blob/master/index.html
 #### https://docs.turbonomic.com
 
 
