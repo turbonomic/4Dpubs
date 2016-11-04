@@ -40,4 +40,11 @@ in action, install the Turbonomic product. You also can see static versions
 of this documentation:
 #### https://docs.turbonomic.com
 
+Two examples of 4Dpubs in action:
+
+Outline of Science -- #### http://cudspan.net/4D_2_Git/4Dpubs/science_index.html
+
+4Dpubs Introduction -- #### cudspan.net/4D_2_Git/4Dpubs/index.html
+
+
 
