@@ -42,9 +42,9 @@ of this documentation:
 
 Two examples of 4Dpubs in action:
 
-Outline of Science -- #### http://cudspan.net/4D_2_Git/4Dpubs/science_index.html
+Outline of Science -- http://cudspan.net/4D_2_Git/4Dpubs/science_index.html
 
-4Dpubs Introduction -- #### cudspan.net/4D_2_Git/4Dpubs/index.html
+4Dpubs Introduction -- http://cudspan.net/4D_2_Git/4Dpubs/index.html
 
 
 
