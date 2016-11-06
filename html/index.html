@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html ng-app="4D">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+
+
+    <!-- Page title set in pageTitle directive -->
+    <title page-title>4D Pubs</title>
+
+
+    <link href="assets/css/vmtHelp.css" rel="stylesheet" type="text/css"/>
+    <link href="assets/css/skin-win8/ui.fancytree.css" rel="stylesheet" type="text/css"/>
+
+
+    <!-- Main Angular scripts-->
+    <script src="assets/js/angular/angular.min.js"></script>
+    <script src="assets/js/angular/angular-cookies.min.js"></script>
+    <script src="assets/js/angular/angular-filter.js"></script>
+    <script src="assets/js/angular/angular-route.min.js"></script>
+
+    <!-- jQuery and Others -->
+    <script src="assets/js/jquery/jquery-2.1.1.min.js"></script>
+    <script src="assets/js/jquery/jquery-ui-1.10.4.min.js"></script>
+    <script src="assets/js/jquery.fancytree-all.min.js"></script>
+    <script src="assets/js/Stemmer.js"></script>
+
+    <!-- Anglar App Scripts -->
+
+    <script src="app/app.module.js"></script>
+    <script src="app/app.controllers.js"></script>
+
+    <script src="app/utils/TransformService.js"></script>
+    <script src="app/utils/TocService.js"></script>
+    <script src="app/utils/SearchService.js"></script>
+    <script src="app/utils/ConrefService.js"></script>
+    <script src="app/utils/ConfigService.js"></script>
+
+
+    <script src="app/components/widgets/widgets.topicWin.directive.js"></script>
+    <script src="app/components/widgets/widgets.treeToc.directive.js"></script>
+    <script src="app/components/widgets/widgets.search.directive.js"></script>
+
+    <!-- Global Scripts -->
+    <script src="assets/Doc/data/map.js"></script>
+
+    <!-- Custom Functions -->
+    <script src="app/utils/ExtensionService.js"></script>
+
+<!--
+    <script  type="text/javascript" src="./JS/vmtHelpSearch.js"></script>
+    <script  type="text/javascript" src="./JS/vmtHelpCustom.js"></script>
+    <script  type="text/javascript" src="./JS/vmtHelp.js"></script>
+    -->
+
+    <!-- Override fancytree... -->
+    <style>
+        ul.fancytree-container {
+            border:none !important;
+            outline:none !important;
+            overflow: visible;
+        }
+    </style>
+
+    <title>4D 2 Pubs</title>
+
+    <script type="text/javascript">
+
+        var bar = "FOO BAR!!!";
+
+        var conf = {}; // Main controller gets this on $window.onload...
+
+        conf.searchData = "search.xml";
+
+        conf.prefix ={general:"../../", cgi:"../" }; // LM tree
+        //conf.prefix ={general:"../../com.vmturbo.UI/help/", cgi:"../../" }; // LW tree
+        //conf.prefix = {general:"../../com.vmturbo.UI/help/", cgi:"../../" }; // GA tree
+
+        conf.defaultMappedTopic = "DEFAULT_DEDICATED";
+
+
+        conf.rootDocName = "index.html";
+        conf.rootTopicDir = "_Content"; // Name of root topic dir
+        conf.defaultMap="maps/4DMap.xml";
+        conf.mapTransform="xsl/_DS_TREE_map_to_toc.xsl";
+        conf.topicTransform="xsl/topicToWeb.xsl";
+
+        conf.searchFile="data/search.xml";
+        conf.searchTransform="xsl/search.xsl";
+
+        //
+        // External IPs to bring into the TOC
+        //
+        conf.externalIpList = [
+            "http://localhost:8400/CUD_MEDIATOR"
+        ];
+        //
+        // Search extensions
+        //
+        conf.callPerSearchIpList = [
+            {
+                ip:"../../GC_Center",
+                url_pattern:"",
+                div:"searchDiv",
+                func:"GC_Search"
+            }
+        ];
+
+        conf.winStr = "";
+        var s = window.location.toString();
+        if(-1 === s.indexOf('#')) {
+            conf.winStr = window.location+"#!MAPPED&"+conf.defaultMappedTopic+"&showToc=1";
+        } else {
+            conf.winStr = window.location;
+        }
+        conf.defaultTopic=vmtMapSpec().getMapEntry(conf.defaultMappedTopic).topic;
+
+
+
+        var getConf = function() {
+            alert("GETTING CONF!!! "+conf.rootTopicDir);
+            return(conf);
+        };
+
+        jQuery(document).ready(
+                function() {
+                    jQuery("#noJS").hide();
+                }
+        );
+
+
+    </script>
+
+</head>
+
+<body id="appBody" ng-app="4D">
+
+<div id="angularThing" ng-controller="TopicCtrl as mainCtrl">
+
+    <nav class='banner'>
+        <div class="bannerbar" >
+            <IMG SRC="assets/images/logo-vmturbo.jpg" id="logo_image">
+            <div class="titleHead">
+                <h4 class="revision"><font color="white"> 4D_2 Pubs</font></h4>
+            </div>
+
+            <div class="buts">
+                <ul class="buts">
+                    <li class="butsLast"><a class="small_buts" id="forwardBut" ng-click="mainCtrl.goForward()" ><b>&gt;&gt;</b></a></li>
+                    <li class="buts"><a class="small_buts" id="backBut" ng-click="mainCtrl.goBack()" ><b>&lt;&lt;</b></a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <!- ========= Topic Content... =========== -->
+    <section id="center">
+
+        <div id="noActiveX">
+            <h4>ActiveX Not Enabled</h4>
+            <p>ActiveX must be enabled to view the User Guide in this browser.</p>
+        </div>
+        <div id="noJS">
+            <h4>Javascript Not Enabled</h4>
+            <p>Javascript must be enabled to view the User Guide in this browser.</p>
+        </div>
+
+        <div id="topicDiv" >
+            <article id ='topicArt' class="topic">
+                <div id="result" tabIdex="-1" ng-bind-html="mainCtrl.topiccontent"/>
+            </article>
+        </div>
+
+    </section>
+
+    <div id="navList">
+        <ul id="menu">
+            <li class="tabbed" id="nav-1"><a href="#" ng-click="mainCtrl.showDiv('toc')" class="Click">TOC</a></li>
+            <li class="tabbed" id="nav-2"><a href="#" ng-click="mainCtrl.showDiv('search')" class="Click">Search</a></li>
+        </ul>
+
+            <span>
+                <div id="toc">
+                    <p><a href="#" ng-click="mainCtrl.expandToc()">open all</a> |
+                        <a href="#" ng-click="mainCtrl.collapseToc()">close all</a></p>
+                    <article class="navList">
+                        <div id="tocresult" tabIdex="-1"/>
+                    </article>
+                </div>
+
+                <div id="search">
+                        <search-directive id="searchDiv" class="navContent" searchobj="searchobj"/>
+                </div>
+            </span>
+    </div>
+    <!--
+    -->
+</div>
+</body>
+</html>

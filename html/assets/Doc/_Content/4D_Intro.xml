@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN"
+"technicalContent/dtd/topic.dtd" [
+<!-- Begin Document Specific Declarations -->
+<!-- End Document Specific Declarations -->
+]>
+<topic id="4d_Intro_1">
+  <title>4D Pubs: Distributed Dynamic Document Display</title>
+
+  <body>
+    <p>4D Pubs is a single-page web application that transforms DITA source
+    into HTML, on the fly (per request). The transforms execute in the
+    browser, using the browser's XSLT processor. This provides benefits, and
+    it also imposes some limitations.</p>
+
+    <section><title>Benefits</title><p><ul>
+        <li><p>Agile work flow -- No need to generate HTML for each pubs
+        cycle.</p></li>
+
+        <li><p>Single skin -- Edit look and feel via a single page.</p></li>
+
+        <li><p>Dynamic in the Browser -- The client can intervene in the
+        transform at the last minute. For example, the client can filter
+        content according to user role, or the client can execute a process to
+        generate/retrieve real-time data.</p></li>
+
+        <li><p>Distributed Source -- When cross-domain requests are enabled
+        (either through CGI or Servlets), 4D can load distributed content and
+        stitch this content into a single body.</p></li>
+      </ul></p></section>
+
+    <section><title>Limitations</title><ul>
+        <li><p>In-Memory Transforms -- Because transforms are in memory,
+        performance is affected by topic size (in theory). This problem
+        reduced by the fact that DITA topics are meant to be smaller than a
+        full document. Note that chapters in the Project Gutenberg publication
+        of the Outline of Science are fairly large, and 4D doesn't show
+        noticeable degradation when loading these topics.</p></li>
+
+        <li><p>In-Memory Search -- This implementation loads search data into
+        memory, and performs search in the client. There's a theoretical limit
+        to the number of topics this can handle. Note that you could implement
+        a search service that uses data stored on the server. This
+        implementation executes search in the browser to support a specific
+        use case. Note that we support over 300 topics, and search does not pose a problem.</p></li>
+
+        <li><p>Limited Support of DITA -- This implementation does not support
+        all of DITA. We created this to support specific business needs
+        (primarily online help), and we have no case for supporting all of
+        DITA. Additional support will require a combination of XSLT,
+        Javascript, and CSS development</p></li>
+
+        <li><p>XSLT 1.0 -- In-browser transforms means that 4D is restricted
+        to XSLT 1.0</p></li>
+      </ul></section>
+
+    <p>Of course, there are other benefits and limitations. By illustrating
+    the most obvious candidates, these lists can help you understand how 4D
+    works.</p>
+
+    <p>This repository includes an AngularJS implementation of 4D Pubs. We
+    ported to AngularJS to enable pulling a subset of the 4D services into a
+    product GUI that is also implemented in AngularJS. In this way, we can
+    integrate DITA in the product user interface. </p>
+  </body>
+</topic>

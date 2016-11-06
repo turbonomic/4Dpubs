@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN"
+"technicalContent/dtd/topic.dtd" [
+<!-- Begin Document Specific Declarations -->
+<!-- End Document Specific Declarations -->
+]>
+<topic id="ReposContent_1">
+  <title>Repository Content</title>
+
+  <body>
+    <p>This repository is an upload of an AngularJS project that is set up in
+    WebStorm. The project is divided into the following:</p>
+
+    <ul>
+      <li><p>index.html (and possibly other index files that open different
+      samples) -- the file that implements the app's single page, and that is
+      bound to the data managed by the Angular directives and
+      services</p></li>
+
+      <li><p>app -- a directory containing the Angular modules that implement
+      4D</p></li>
+
+      <li><p>assets -- a directory containing content, styling, and external
+      JS libs</p></li>
+    </ul>
+    <note><p>The following list is generated as a conref. It calls the ConrefService with the following
+    value for the conref attr: <codeph>jsFunction:buildRefList:Related Links</codeph>. The ConrefService in turn
+    calls the ExtensionService to execute a function as follows:
+      <codeph>buildRefList("Related Links")</codeph>. The result is this list of related links, derived
+      from the TOC entries that lie under this specific topic. This is included here to show an
+    example of dynamic content generation.</p></note>
+    <p conref = "jsFunction:buildRefList:Related Links"></p>
+  </body>
+</topic>
