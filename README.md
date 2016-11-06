@@ -24,11 +24,18 @@ limitations under the License.
 1. [Overview](#overview)
 2. [Getting Started](#getting-started)
   * [System Requirements](#system-requirements)
+  * [Building with Docker](#building-with-docker)
 3. [Sites using 4D](#sites-using-4dpubs)
 
 ## Getting Started
 
 ### System Requirements
+
+Any web server can serve up the files.  Simply copy the contents html folder to the root folder of a web server of your choice.  
+
+### Building with Docker
+
+A basic Docker Compose file is included under the Docker folder.  Testing with Docker is still experimental as we develop more deployment methods to run 4Dpubs.
 
 ## Sites Using 4Dpubs
 
