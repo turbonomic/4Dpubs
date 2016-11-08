@@ -14,8 +14,20 @@ var setRootTopicDir = function(path){
 	if(toks.length === 2){
 		that.conf.rootTopicDir = toks[0];
 		console.log("SETTING ROOT TOPIC DIR TO: "+that.conf.rootTopicDir);
-	} else {
+	} else if(toks.length > 2){
+		that.conf.rootTopicDir = "";
+		for(var i = 0; i<toks.length - 1; i++) {
+			that.conf.rootTopicDir += toks[i];
+			if(i < toks.length - 2) {
+				that.conf.rootTopicDir += "/";
+			}
+		}
+		console.warn("TOKS Length: "+toks.length);
+		console.warn("PATH IS: "+path);
+		console.log("SETTING ROOT TOPIC DIR TO: "+that.conf.rootTopicDir);
+	}else {
 		console.warn("NO VALID ROOT TOPIC DIR FOR: "+path);
+		console.warn("TOKS Length: "+toks.length);
 	}
 };
 
@@ -42,7 +54,9 @@ function TopicCtrl ($scope, $rootScope, $sce, $window, $location, $q, TransformS
 
 		that.showDiv('toc');
 
+		console.log("BUILDING TOC...");
 		that.buildToc().then(jQuery.ui.fancytree.info("TOC BUILT!!!! "+history.length));
+		console.log("LOADING SEARCH...");
 		that.loadSearch().then(function(){
 			jQuery.ui.fancytree.info("ARF SEARCH BUILT!!!! "+history.length);
 			//SearchService.doSearch("open", "And");
@@ -90,13 +104,13 @@ function TopicCtrl ($scope, $rootScope, $sce, $window, $location, $q, TransformS
 		TocService.expandAll();
 	},
 
-	this.collapseToc = function() {
-		TocService.collapseAll();
-	},
+		this.collapseToc = function() {
+			TocService.collapseAll();
+		},
 
-	this.goBack = function() {
-		history.back();
-	};
+		this.goBack = function() {
+			history.back();
+		};
 	this.goForward = function() {
 		history.forward();
 	};
@@ -147,6 +161,7 @@ function TopicCtrl ($scope, $rootScope, $sce, $window, $location, $q, TransformS
 		var deferred = $q.defer();
 
 		var tocCallback = function(response) {
+			console.log("TOC CALLBACK RESPONSE: "+response.resp);
 			TocService.initToc(jQuery("#tocresult"));
 			TocService.buildMainToc(response.resp,"index.html",that.rootTopicDir);
 		};
@@ -155,6 +170,9 @@ function TopicCtrl ($scope, $rootScope, $sce, $window, $location, $q, TransformS
 			jQuery.ui.fancytree.error("ERROR TRANSFORMING TOC!!!\n"+response.resp.data);
 			deferred.reject("FAILURE");
 		};
+
+		console.log("BUILDING TOC FOR: "+that.conf.defaultMap);
+		console.log("TRANSFORMING WITH: "+that.conf.mapTransform);
 
 		TransformService.initTransformChain(that.conf.mapTransform, that.conf.defaultMap)
 			.then(TransformService.loadXslDoc)
@@ -171,6 +189,7 @@ function TopicCtrl ($scope, $rootScope, $sce, $window, $location, $q, TransformS
 
 
 	this.showTopicFromUrl = function(inUrl) {
+		console.log("SHOWING TOPIC FROM URL");
 
 		if(undefined === inUrl || "" === inUrl) {
 			return;
@@ -191,7 +210,7 @@ function TopicCtrl ($scope, $rootScope, $sce, $window, $location, $q, TransformS
 		if(topicPath.substring(0,6) === 'MAPPED') { // Look up in the list of mapped topics.
 			toks = topicPath.split('&');
 			topicPath = getMapEntry(toks[1]).topic;
-            jQuery.ui.fancytree.info("MAPPED PATH: "+topicPath);
+			jQuery.ui.fancytree.info("MAPPED PATH: "+topicPath);
 		} else
 		if(topicPath.substring(0,6) === 'topic=') { // Old-school xref
 			toks = topicPath.split('=');
@@ -201,7 +220,7 @@ function TopicCtrl ($scope, $rootScope, $sce, $window, $location, $q, TransformS
 			//console.log("TOPIC PATH TOKS LEN: "+subLen+" for topic path: "+sub);
 			if(subToks[0] === '..') {
 				topicPath = that.conf.rootTopicDir+"/"+sub; // This is relative to a root topic dir
-                jQuery.ui.fancytree.info("OLDSCHOOL XREF PATH 1: "+topicPath);
+				jQuery.ui.fancytree.info("OLDSCHOOL XREF PATH 1: "+topicPath);
 				setRootTopicDir(topicPath);
 			} else if(subToks[0] !== that.conf.rootTopicDir && subLen === 1) { // Make this relative to the root topic dir.
 				topicPath = that.conf.rootTopicDir+"/"+sub;
@@ -211,13 +230,13 @@ function TopicCtrl ($scope, $rootScope, $sce, $window, $location, $q, TransformS
 				jQuery.ui.fancytree.info("OLDSCHOOL XREF PATH 3: "+topicPath);
 			} else {
 				topicPath = sub;
-                jQuery.ui.fancytree.info("OLDSCHOOL XREF PATH 4: "+topicPath);
+				jQuery.ui.fancytree.info("OLDSCHOOL XREF PATH 4: "+topicPath);
 			}
 		} else { // Normal URL
 			console.log("NORMAL URL: "+topicPath);
 			setRootTopicDir(topicPath);
 		}
-        jQuery.ui.fancytree.info("FINAL TOPIC PATH: "+topicPath);
+		jQuery.ui.fancytree.info("FINAL TOPIC PATH: "+topicPath);
 		that.populateTopicContent(topicPath, that.conf.topicTransform);
 	};
 
@@ -245,9 +264,9 @@ function TopicCtrl ($scope, $rootScope, $sce, $window, $location, $q, TransformS
 		};
 
 		var errorCallback = function(response) {
-            jQuery.ui.fancytree.error("ERROR TRANSFORMING FILE!!!\n"+response.resp.data);
-            jQuery.ui.fancytree.error("XML FILE PATH: "+response.resp.data);
-            jQuery.ui.fancytree.error("XSL FILE PATH "+response.resp.data);
+			jQuery.ui.fancytree.error("ERROR TRANSFORMING FILE!!!\n"+response.resp.data);
+			jQuery.ui.fancytree.error("XML FILE PATH: "+response.resp.data);
+			jQuery.ui.fancytree.error("XSL FILE PATH "+response.resp.data);
 		};
 
 		TransformService.initTransformChain(xslFilePath, xmlFilePath)
