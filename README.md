@@ -33,7 +33,7 @@ limitations under the License.
 
 Any web server can serve up the files.  Simply copy the contents html folder to the root folder of a web server of your choice.  
 
-### Building with Docker
+### Building with Docker (EXPERIMENTAL - IN PROGRESS)
 
 A basic Docker Compose file is included under the Docker folder.  Testing with Docker is still experimental as we develop more deployment methods to run 4Dpubs.
 
