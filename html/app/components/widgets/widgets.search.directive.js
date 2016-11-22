@@ -2,6 +2,8 @@
  * Created by kalel on 10/25/16.
  */
 
+
+
 (function () {
     angular.module('4D').directive('searchDirective', function (SearchService, TocService) {
         return {
@@ -40,7 +42,6 @@
 
                 $scope.setAndOr = function(event) {
                     event.preventDefault();
-                    //alert("ARF");
 
                     if($scope.andorclass === "Or") {
                         $scope.andorclass = "And";
@@ -65,11 +66,11 @@
                     if($scope.highlightclass === "highlightButtonOn") {
                         $scope.highlightclass = "highlightButtonOff";
                         $scope.highlightsrc = "./assets/Doc/graphics/Icons/highlightToDo.png";
-                        //vmtHelpSearch.undoHighlight();
+                        SearchService.undoHighlight();
                     } else if($scope.highlightclass === "highlightButtonOff") {
                         $scope.highlightclass = "highlightButtonOn";
                         $scope.highlightsrc = "./assets/Doc/graphics/Icons/highlightDone.png";
-                        //vmtHelpSearch.injectHighlights();
+                        SearchService.doHighlight($scope.searchterm);
                     }
 
                 };
@@ -83,10 +84,11 @@
 
                     var x = SearchService.doSearch(spec.terms, spec.searchType);
                     var len = x.length;
-                    console.log("SEARCH RESULT LENGTH: "+x.length);
+                    console.log("SEARCH RESULT LENGTH: "+len);
 
                     var out = "";
                     if(undefined === len || len < 1 ) {
+                        console.log("Search lengeth is zero");
                         out = '<i>No matches found for</i> \"'+spec.terms+'\".';
                     } else {
                         out = '<ul>';
@@ -95,22 +97,25 @@
                             if(null !== node) { // Map to role-based TOC...
                                 if(x[i].file.substr(0, 4) === "http") {
                                     //out = out+vmtLiStartHttp+x[i].file+"&isSearch=1\">"+x[i].name+vmtLiEnd;
-                                    out = out+vmtLiStartHttp+x[i].file+"\">"+x[i].name+vmtLiEnd;
+                                    out = out+vmtLiStartHttp+x[i].file+"?showHighlight=true\">"+x[i].name+vmtLiEnd;
                                 } else {
                                     //out = out+vmtLiStart+x[i].file+"&isSearch=1\">"+x[i].name+vmtLiEnd;
-                                    out = out+vmtLiStart+x[i].file+"\">"+x[i].name+vmtLiEnd;
+                                    out = out+vmtLiStart+x[i].file+"?showHighlight=true\">"+x[i].name+vmtLiEnd;
                                 }
                                 haveMatch = true;
                             }
                         }
                         out = out+"</ul>";
                         if(false == haveMatch) {
+                            console.log("Search gor zero matching nodes from TOC");
                             out = '<i>No matches found for</i> \"'+spec.terms+'\".';
                         }
                     }
                     obj.content = $sce.trustAsHtml(out);
 
                 };
+
+
             }
         };
 
