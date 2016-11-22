@@ -1,36 +1,4 @@
 
-var setRootTopicDir = function(path){
-	var toks = path.split('/');
-	var len = toks.length;
-	for(var i = 0; i<len; i++) {
-		if(toks[i] === "..") {
-			that.conf.rootTopicDir = toks[i + 1];
-			console.log("SETTING ROOT TOPIC DIR TO: "+that.conf.rootTopicDir);
-			return;
-		}
-	}
-	//console.log("NOT DOTDOT ROOT TOPIC URL!!!"+ path);
-	toks = path.split('/');
-	if(toks.length === 2){
-		that.conf.rootTopicDir = toks[0];
-		console.log("SETTING ROOT TOPIC DIR TO: "+that.conf.rootTopicDir);
-	} else if(toks.length > 2){
-		that.conf.rootTopicDir = "";
-		for(var i = 0; i<toks.length - 1; i++) {
-			that.conf.rootTopicDir += toks[i];
-			if(i < toks.length - 2) {
-				that.conf.rootTopicDir += "/";
-			}
-		}
-		console.warn("TOKS Length: "+toks.length);
-		console.warn("PATH IS: "+path);
-		console.log("SETTING ROOT TOPIC DIR TO: "+that.conf.rootTopicDir);
-	}else {
-		console.warn("NO VALID ROOT TOPIC DIR FOR: "+path);
-		console.warn("TOKS Length: "+toks.length);
-	}
-};
-
 
 function TopicCtrl ($scope, $rootScope, $sce, $window, $location, $q, TransformService, TocService, SearchService) {
 
@@ -47,40 +15,53 @@ function TopicCtrl ($scope, $rootScope, $sce, $window, $location, $q, TransformS
 	$window.onload = function(e) {
 
 		if(undefined !== that.conf.winStr && "" !== that.conf.winStr) {
-			jQuery.ui.fancytree.info("SETTING LOCATION FOR UNDEFINED: "+that.conf.winStr);
+			console.log("SETTING LOCATION FOR UNDEFINED: "+that.conf.winStr);
 			$window.location=that.conf.winStr;
 		}
-		jQuery.ui.fancytree.info("ONLOAD!!!! "+history.length);
+		console.log("ONLOAD!!!! "+history.length);
 
 		that.showDiv('toc');
 
 		console.log("BUILDING TOC...");
-		that.buildToc().then(jQuery.ui.fancytree.info("TOC BUILT!!!! "+history.length));
+		that.buildToc().then(console.log("TOC BUILT!!!! "+history.length));
 		console.log("LOADING SEARCH...");
 		that.loadSearch().then(function(){
-			jQuery.ui.fancytree.info("ARF SEARCH BUILT!!!! "+history.length);
+			console.log("ARF SEARCH BUILT!!!! "+history.length);
 			//SearchService.doSearch("open", "And");
 		});
 
-
-
-
-
-		//jQuery.ui.fancytree.info("TOC BUILT!!!! "+history.length);
+		//console.log("TOC BUILT!!!! "+history.length);
 	};
 
-	$rootScope.$on('$locationChangeSuccess',function(event, url ) {
-		jQuery.ui.fancytree.info("$locationChangeSuccess: "+url);
+	$rootScope.$on('$locationChangeSuccess',function(event, inUrl ) {
+
+		console.log("\n\nLocation Change Success Event START!!!");
+
+		var toks = inUrl.split('?');
+		if(undefined === toks || 0 === toks.length) {
+			console.error("Location change but no URL to parse.");
+			return;
+		}
+		var url = toks[0];
+		var params = toks[1];
+		var pObj;
+		if(undefined !== params) {
+			pObj = that.getParamsObj(params);
+		}
+
+		console.log("$locationChangeSuccess URL is: "+url);
 		that.conf = $window.conf; // Leaving open the option to load conf from an external file
-		that.showTopicFromUrl(url);
+		that.showTopicFromUrl(url, pObj);
 		if(undefined !== that.conf.tocUrl) {
-			console.log("USING TOC URL!!! "+that.conf.tocUrl);
+			//console.log("USING TOC URL!!! "+that.conf.tocUrl);
 			TocService.highlightNodeForDefaultTopic(that.conf.tocUrl);
 		} else {
-			console.log("USING NORMAL URL!!! "+url);
+			//console.log("USING NORMAL URL!!! "+url);
 			TocService.highlightNodeForDefaultTopic(url);
 		}
-		jQuery.ui.fancytree.info("CHANGE SUCCESS!!!! "+history.length);
+
+
+		console.log("CHANGE SUCCESS END!!!!\n\n"+history.length);
 	});
 
 	$rootScope.$on('tocResponse', function(event, response) {
@@ -88,6 +69,53 @@ function TopicCtrl ($scope, $rootScope, $sce, $window, $location, $q, TransformS
 		$location.replace();
 		$window.location = response.data;
 	});
+
+
+	this.setRootTopicDir = function(path){
+		var toks = path.split('/');
+		var len = toks.length;
+		for(var i = 0; i<len; i++) {
+			if(toks[i] === "..") {
+				that.conf.rootTopicDir = toks[i + 1];
+				console.log("SETTING ROOT TOPIC DIR TO: "+that.conf.rootTopicDir);
+				return;
+			}
+		}
+		//console.log("NOT DOTDOT ROOT TOPIC URL!!!"+ path);
+		toks = path.split('/');
+		if(toks.length === 2){
+			that.conf.rootTopicDir = toks[0];
+			console.log("SETTING ROOT TOPIC DIR TO: "+that.conf.rootTopicDir);
+		} else if(toks.length > 2){
+			that.conf.rootTopicDir = "";
+			for(var i = 0; i<toks.length - 1; i++) {
+				that.conf.rootTopicDir += toks[i];
+				if(i < toks.length - 2) {
+					that.conf.rootTopicDir += "/";
+				}
+			}
+			console.warn("TOKS Length: "+toks.length);
+			console.warn("PATH IS: "+path);
+			console.log("SETTING ROOT TOPIC DIR TO: "+that.conf.rootTopicDir);
+		}else if(toks.length === 1) {
+			that.conf.rootTopicDir = $window.conf.rootTopicDir;
+			console.log("SETTING ROOT TOPIC DIR TO: "+$window.conf.rootTopicDir);
+		}else {
+			console.warn("NO VALID ROOT TOPIC DIR FOR: "+path);
+			console.warn("TOKS Length: "+toks.length);
+		}
+	};
+
+	this.getParamsObj = function(params) {
+		toks = params.split("&");
+		var paramsObj = {"BOGUS":"BOGUS"};
+		for(var i=0; i<toks.length; i++) {
+			subToks = toks[i].split("=");
+			console.log("PARAMS SETTING -- "+subToks[0]+":"+subToks[1]);
+			paramsObj[subToks[0]] = subToks[1];
+		}
+		return(paramsObj);
+	};
 
 	this.showDiv = function(divName) {
 		//
@@ -102,15 +130,15 @@ function TopicCtrl ($scope, $rootScope, $sce, $window, $location, $q, TransformS
 
 	this.expandToc = function() {
 		TocService.expandAll();
-	},
+	};
 
-		this.collapseToc = function() {
-			TocService.collapseAll();
-		},
+	this.collapseToc = function() {
+		TocService.collapseAll();
+	};
 
-		this.goBack = function() {
-			history.back();
-		};
+	this.goBack = function() {
+		history.back();
+	};
 	this.goForward = function() {
 		history.forward();
 	};
@@ -126,10 +154,10 @@ function TopicCtrl ($scope, $rootScope, $sce, $window, $location, $q, TransformS
 		var deferred = $q.defer();
 
 		var searchCallback = function(response) {
-			//console.log("SEARCH RESPONSE!!!: "+ response.resp);
 			console.log("LOADING SEARCH IN CALLBACK FROM CONTROLLER!!!");
 			SearchService.loadSearch(response.resp);
 			SearchService.setRootDocName(that.conf.rootDocName);
+			console.log("SEARCH ROOT DOC NAME IS: "+SearchService.getRootDocName());
 			//SearchService.initSearch(jQuery("#searchDiv"));
 			//TocService.buildMainToc(response.resp,"index.html",that.rootTopicDir);
 		};
@@ -172,7 +200,7 @@ function TopicCtrl ($scope, $rootScope, $sce, $window, $location, $q, TransformS
 		};
 
 		console.log("BUILDING TOC FOR: "+that.conf.defaultMap);
-		console.log("TRANSFORMING WITH: "+that.conf.mapTransform);
+		console.log("TRANSFORMING TOC WITH: "+that.conf.mapTransform);
 
 		TransformService.initTransformChain(that.conf.mapTransform, that.conf.defaultMap)
 			.then(TransformService.loadXslDoc)
@@ -188,8 +216,8 @@ function TopicCtrl ($scope, $rootScope, $sce, $window, $location, $q, TransformS
 	};
 
 
-	this.showTopicFromUrl = function(inUrl) {
-		console.log("SHOWING TOPIC FROM URL");
+	this.showTopicFromUrl = function(inUrl, pObj) {
+		console.log("SHOWING TOPIC FROM URL: " + inUrl);
 
 		if(undefined === inUrl || "" === inUrl) {
 			return;
@@ -210,7 +238,7 @@ function TopicCtrl ($scope, $rootScope, $sce, $window, $location, $q, TransformS
 		if(topicPath.substring(0,6) === 'MAPPED') { // Look up in the list of mapped topics.
 			toks = topicPath.split('&');
 			topicPath = getMapEntry(toks[1]).topic;
-			jQuery.ui.fancytree.info("MAPPED PATH: "+topicPath);
+			console.log("MAPPED PATH: "+topicPath);
 		} else
 		if(topicPath.substring(0,6) === 'topic=') { // Old-school xref
 			toks = topicPath.split('=');
@@ -220,24 +248,27 @@ function TopicCtrl ($scope, $rootScope, $sce, $window, $location, $q, TransformS
 			//console.log("TOPIC PATH TOKS LEN: "+subLen+" for topic path: "+sub);
 			if(subToks[0] === '..') {
 				topicPath = that.conf.rootTopicDir+"/"+sub; // This is relative to a root topic dir
-				jQuery.ui.fancytree.info("OLDSCHOOL XREF PATH 1: "+topicPath);
-				setRootTopicDir(topicPath);
+				console.log("OLDSCHOOL XREF PATH 1: "+topicPath);
+				that.setRootTopicDir(topicPath);
 			} else if(subToks[0] !== that.conf.rootTopicDir && subLen === 1) { // Make this relative to the root topic dir.
 				topicPath = that.conf.rootTopicDir+"/"+sub;
-				jQuery.ui.fancytree.info("OLDSCHOOL XREF PATH 2: "+topicPath);
+				console.log("OLDSCHOOL XREF PATH 2: "+topicPath);
 			} else if(subToks[0] !== that.conf.rootTopicDir) { // Make this relative to the root topic dir.
-				topicPath = that.conf.rootTopicDir+"/../"+sub;
-				jQuery.ui.fancytree.info("OLDSCHOOL XREF PATH 3: "+topicPath);
+				topicPath = that.conf.rootTopicDir+"/"+sub;
+				console.log("OLDSCHOOL XREF PATH 3: "+topicPath);
 			} else {
 				topicPath = sub;
-				jQuery.ui.fancytree.info("OLDSCHOOL XREF PATH 4: "+topicPath);
+				console.log("OLDSCHOOL XREF PATH 4: "+topicPath);
 			}
 		} else { // Normal URL
 			console.log("NORMAL URL: "+topicPath);
-			setRootTopicDir(topicPath);
+			if(undefined !== that.conf.mapUrlPrefix && "" !== that.conf.mapUrlPrefix) {
+				topicPath = that.conf.mapUrlPrefix+topicPath;
+			}
+			that.setRootTopicDir(topicPath);
 		}
-		jQuery.ui.fancytree.info("FINAL TOPIC PATH: "+topicPath);
-		that.populateTopicContent(topicPath, that.conf.topicTransform);
+		console.log("FINAL TOPIC PATH: "+topicPath);
+		that.populateTopicContent(topicPath, that.conf.topicTransform, pObj);
 	};
 
 	this.setTocUrl = function(url) {
@@ -250,23 +281,31 @@ function TopicCtrl ($scope, $rootScope, $sce, $window, $location, $q, TransformS
 		} else {
 			that.conf.tocUrl = "../"+url;
 		}
-		//that.conf.tocUrl = "../"+url;
 		console.log("SETTING TOC URL: "+that.conf.tocUrl);
 	};
 
-	this.populateTopicContent = function(xmlFilePath, xslFilePath){
+	this.populateTopicContent = function(xmlFilePath, xslFilePath, pObj){
+
+		console.log("populateTopicContent: TRANSFORMING FILE!!!");
+		console.log("XML FILE PATH: "+xmlFilePath);
+		console.log("XSL FILE PATH "+xslFilePath);
 
 		that.setTocUrl(xmlFilePath);
 
 		var topicCallback = function(response) {
 			//alert("TOPIC: "+response.resp);
 			that.topiccontent = $sce.trustAsHtml(response.resp);
+
+			if(undefined !== pObj) {
+				console.log("Location Change Success Event -- setting highlight for pObj: "+pObj);
+				SearchService.setHighlightForUrl(pObj);
+			}
 		};
 
 		var errorCallback = function(response) {
-			jQuery.ui.fancytree.error("ERROR TRANSFORMING FILE!!!\n"+response.resp.data);
-			jQuery.ui.fancytree.error("XML FILE PATH: "+response.resp.data);
-			jQuery.ui.fancytree.error("XSL FILE PATH "+response.resp.data);
+			console.error("populateTopicContent: ERROR TRANSFORMING FILE!!!\n"+response.resp.data);
+			console.error("XML FILE PATH: "+xmlFilePath);
+			console.error("XSL FILE PATH "+xslFilePath);
 		};
 
 		TransformService.initTransformChain(xslFilePath, xmlFilePath)
