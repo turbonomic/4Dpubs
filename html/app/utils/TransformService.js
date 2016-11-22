@@ -394,7 +394,7 @@ angular
                 var superDeferred = $q.defer();
 
                 var errorCallback = function(response) {
-                    alert("ERROR TRANSFORMING FILE!!!");
+                    console.error("transformFile: ERROR TRANSFORMING FILE!!!");
                 };
                 //
                 // Perform the transform in a promise chain.
