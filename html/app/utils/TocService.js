@@ -5,14 +5,10 @@ angular
     .module ('4D')
     .factory ('TocService', ['$window', '$rootScope', function($window, $rootScope) {
 
-
         var _tocTree = undefined;
-
         var currentNode;
 
         return{
-
-
             getCurrentNode : function() {
                 return currentNode;
             },
@@ -25,12 +21,10 @@ angular
             },
 
             initToc : function(div) {
-                jQuery.ui.fancytree.info("INIT TOC");
-
+                console.log("INIT TOC");
                 var tocResponse = function(node) {
-
                     currentNode = node;
-                    console.log("tocResponse: "+node.key);
+                    //console.log("tocResponse: "+node.key);
                     node.setExpanded();
                     //$window.location.replace("#!"+node.key.replace('../',''));
                     //*//////////
@@ -45,9 +39,8 @@ angular
 
                 var activatedItem = function(event, data) {
                     if(undefined === data) {
-                        jQuery.ui.fancytree.error("UNDEFINED DATA TO HANDLE TOC EVENT!");
+                        console.error("UNDEFINED DATA TO HANDLE TOC EVENT!");
                     } else {
-                        //alert("vmtHelpCustom.tocResponse("+data.node+");");
                         currentNode = data.node;
                         tocResponse(data.node);
                     }
@@ -69,10 +62,7 @@ angular
                 currentNode = rootNode;
 
 
-                jQuery.ui.fancytree.info("buildMainToc Root Node:\n"+$window.location.href.split('#')[0]+"#topic="+rootNode.key)
-                //jQuery.ui.fancytree.info(cleanedStr);
-
-                //jQuery.ui.fancytree.info("HOME TOC:\n"+cleanedStr);
+                console.log("buildMainToc Root Node:\n"+$window.location.href.split('#')[0]+"#topic="+rootNode.key);
 
                 //var vmtLinkStart = rootDocName+"#topic="+topTopicDir;
                 var vmtLinkStart = rootDocName+"#!"+topTopicDir;
@@ -103,7 +93,7 @@ angular
             },
 
             getChildrenOfNodeByKey : function(keyStr) {
-                jQuery.ui.fancytree.info("getChildrenOfNodeByKey: "+keyStr);
+                console.log("getChildrenOfNodeByKey: "+keyStr);
                 var keyNode = _tocTree.getNodeByKey(keyStr);
                 if(null === keyNode) {
                     return(null);
@@ -129,35 +119,19 @@ angular
             },
 
             highlightNodeForDefaultTopic : function(url) {
-                if(undefined === _tocTree) { return; }
+                if(undefined === _tocTree) {
+                    console.error("highlightNodeForDefaultTopic has undefined tocTree");
+                    return;
+                }
+                return;
                 // First clear current selection
                 _tocTree.getRootNode().visit(function(node){
                     node.setActive(false);
                     node.setSelected(false);
                 });
                 var keyStr = url;
-                /*////////////////
-                var toks = url.split('=');
-                var s = toks[1];
-                toks = s.split('#');
-                var keyStr = toks[0];
-                //*///////////////
-                /*////////////////
-                //
-                // Temporary hack to find the node in the TOC if it's
-                // for a file in a different dir.
-                // TO DO: Fix XREF in the XSLT to handle multiple topic dirs.
-                //
-                var keyStr = this.guessKeyForLocation();
-                console.log("HIGHLIGHTING NODE: "+url);
-                var hackKeyStr = keyStr.substring(11,18);
-                if(hackKeyStr === "_Target") {
-                    var hack = keyStr.split("/");
-                    keyStr = "../_Target_Configuration_Topics/"+hack[hack.length - 1];
-                }
-                //*//////////////////
-                console.log("HIGHLIGHTING NODE: "+url);
-                console.log("highlightNodeForDefaultTopic: "+keyStr);
+                console.log("highlightNodeForDefaultTopic HIGHLIGHTING NODE: "+url);
+                //console.log("highlightNodeForDefaultTopic: "+keyStr);
                 var node = _tocTree.getNodeByKey(keyStr);
 
                 // Now select the current one
